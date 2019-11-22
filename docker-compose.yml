@@ -34,3 +34,4 @@ services:
       # Lava settings
       - ./overlays/etc/lava-server/settings.conf:/etc/lava-server/settings.conf
       - ./overlays/etc/lava-server/settings.d/01-autoregister.yaml:/etc/lava-server/settings.d/01-autoregister.yaml
+
