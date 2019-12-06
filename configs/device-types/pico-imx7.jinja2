@@ -1,0 +1,18 @@
+# i.MX7 Pico
+
+{% extends 'base-uboot.jinja2' %}
+
+{% set device_type = "pico-imx7" %}
+
+{% set bootloader_prompt = bootloader_prompt|default('=>') %}
+{% set console_device = console_device|default('ttymxc4') %}
+
+{% set bootm_kernel_addr = '0x80800000' %}
+{% set bootm_ramdisk_addr = '0x83800000' %}
+{% set bootm_dtb_addr = '0x83000000' %}
+{% set bootz_kernel_addr = bootm_kernel_addr %}
+{% set bootz_ramdisk_addr = bootm_ramdisk_addr %}
+{% set bootz_dtb_addr = bootm_dtb_addr %}
+
+{% set uboot_mkimage_arch = 'arm' %}
+
