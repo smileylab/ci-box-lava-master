@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  lava-server:
+    ports:
+      - "5554:80"    # http
+      - "5555:5555"  # logger socket
+      - "5556:5556"  # master socket
+
