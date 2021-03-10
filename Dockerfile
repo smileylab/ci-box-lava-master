@@ -2,7 +2,7 @@ ARG version=latest
 FROM lavasoftware/lava-server:${version}
 
 ARG extra_packages=""
-RUN apt-get -y update && apt-get -q -y --no-install-recommends install ${extra_packages} && rm -rf /var/cache/apk/*
+RUN echo "install extra packages: ${extra_packages}" && apt-get -y update && apt-get -q -y -f --install-suggests install ${extra_packages} && rm -rf /var/cache/apk/*
 
 #
 # copy official health-check yaml test jobs from github BayLibre
