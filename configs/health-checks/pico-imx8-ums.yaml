@@ -1,0 +1,60 @@
+# pico-imx8-ums-healthcheck
+metadata:
+  # change these fields when modifying this job for your own tests
+  kernel.tree: TechNexion
+  kernel.version: v4.14.y
+  kernel.endian: little
+  test.plan: u-boot-ums
+  device.type: pico-imx8-ums
+  job.arch: arm
+  job.name: TechNexion_pico-imx8mm-ums_healthcheck
+  job.image_url: http://10.88.88.12:8085/technexion/sdcard/fsl-image-qt5-validation-imx-pico-imx8mm.sdcard.bz2
+  job.image_type: sdcard
+
+# pico-imx8-ums-healthcheck
+device_type: pico-imx8-ums
+
+context:
+  test_character_delay: "10"
+  console_device: "ttymxc1"
+
+job_name: pico-imx8-ums-healthcheck
+
+timeouts:
+  job:
+    minutes: 40
+  action:
+   minutes: 20
+  actions:
+    power-off:
+      seconds: 30
+
+priority: high
+visibility: public
+
+actions:
+
+- deploy:
+    timeout:
+        minutes: 10
+    to: u-boot-ums
+    os: oe
+    image:
+      url: http://10.88.88.12:8085/technexion/sdcard/fsl-image-qt5-validation-imx-pico-imx8mm.sdcard.bz2
+      compression: bz2
+      root_partition: 1
+
+- boot:
+    method: u-boot
+    commands: ums
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+      - '/ #'
+      - 'linaro-test'
+      - 'root@debian:~#'
+      - 'root@pico-imx8mm:~#'
+      - 'root@b2qt-pico-imx8mm:~#'
+    timeout:
+        minutes: 30
