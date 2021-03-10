@@ -1,0 +1,89 @@
+# pico-imx8-healthcheck
+metadata:
+  # change these fields when modifying this job for your own tests
+  image.type: 'kernel-ci'
+  image.url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/
+  kernel.tree: TechNexion
+  kernel.version: v4.14.y
+  kernel.endian: little
+  kernel.defconfig: tn-imx-defconfig
+  kernel.defconfig_base: tn-imx-defconfig
+  kernel.arch_defconfig: arm64-tn-imx-defconfig
+  platform.dtb: imx8mm-pico-pi-ili9881c.dtb
+  platform.dtb_short: imx8mm-pico-pi-ili9881c.dtb
+  platform.fastboot: false
+  platform.name: pico-imx8mm-pi
+  platform.mach: pico-imx8
+  test.plan: boot
+  device.type: pico-imx8
+  job.arch: arm64
+  job.name: TechNexion_pico-imx8_kernel-v4.14.98_tn-imx8-defconfig_imx8mm-pico-pi-ili9881c.dtb_standard-health-check
+  job.kernel_url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/Image
+  job.kernel_image: Image
+  job.modules_url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/modules.tar.xz
+  job.initrd_url: http://10.88.88.12:8085/technexion/buildroot/arm64/rootfs.cpio.gz
+  job.nfsrootfs_url: None
+  job.dtb_url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/dtbs/imx8mm-pico-pi-ili9881c.dtb
+
+# the device_type used for the job definition
+device_type: pico-imx8
+
+# context allows specific values to be overridden or included
+context:
+  test_character_delay: "10"
+  console_device: "ttymxc1"
+
+# description of the test objective
+job_name: TechNexion_pico-imx8mm_kernel-v4.14.98_tn-imx8-defconfig_imx8mm-pico-pi-ili9881c.dtb_standard-health-check
+
+# default time-out for the job
+timeouts:
+  job:
+    minutes: 10
+  action:
+   minutes: 10
+  actions:
+    power-off:
+      seconds: 30
+
+# priority of the job definition
+priority: high
+
+# visibility of the job definition
+visibility: public
+
+# defines the pipeline job submissions (syntax formats: list of dictionaries, so a : follow by a -)
+actions:
+# list item "deploy" action
+- deploy:
+    timeout:
+       minutes: 10
+    to: tftp
+    kernel:
+      url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/Image
+      type: image
+    ramdisk:
+      url: http://10.88.88.12:8085/technexion/buildroot/arm64/rootfs.cpio.gz
+      compression: gz
+    modules:
+      url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/modules.tar.xz
+      compression: xz
+    dtb:
+      url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/dtbs/imx8mm-pico-pi-ili9881c.dtb
+    os: oe
+# list item "boot" action
+- boot:
+    method: u-boot
+    commands: ramdisk
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+      - '/ #'
+      - 'linaro-test'
+      - 'root@debian:~#'
+      - 'root@pico-imx8mm:~#'
+      - 'root@b2qt-pico-imx8mm:~#'
+    timeout:
+      minutes: 5
+
