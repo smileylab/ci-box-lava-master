@@ -21,7 +21,7 @@ metadata:
   job.kernel_url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/Image
   job.kernel_image: Image
   job.modules_url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/modules.tar.xz
-  job.initrd_url: http://10.88.88.12:8085/technexion/buildroot/arm64/rootfs.cpio.gz
+  job.initrd_url: http://10.88.88.12:8085/technexion/buildroot/arm64/tn-rootfs.cpio.gz
   job.nfsrootfs_url: None
   job.dtb_url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/dtbs/imx8mm-pico-pi-ili9881c.dtb
 
@@ -63,7 +63,7 @@ actions:
       url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/Image
       type: image
     ramdisk:
-      url: http://10.88.88.12:8085/technexion/buildroot/arm64/rootfs.cpio.gz
+      url: http://10.88.88.12:8085/technexion/buildroot/arm64/tn-rootfs.cpio.gz
       compression: gz
     modules:
       url: http://10.88.88.12:8085/technexion/linux-4.14.y/v4.14.98/arm64/tn_imx8_defconfig/gcc-8/modules.tar.xz
