@@ -1,0 +1,88 @@
+# lec-imx8-healthcheck
+metadata:
+  # change these fields when modifying this job for your own tests
+  image.type: 'kernel-ci'
+  image.url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/
+  kernel.tree: Adlink
+  kernel.version: v5.4.70
+  kernel.endian: little
+  kernel.defconfig: lec-imx8mp_defconfig
+  platform.dtb: lec-imx8mp.dtb
+  platform.dtb_short: lec-imx8mp.dtb
+  platform.fastboot: false
+  platform.name: lec-imx8mp-ipi
+  platform.mach: lec-imx8mp
+  test.plan: boot
+  device.type: lec-imx8
+  job.arch: arm64
+  job.name: lec-imx8_health-check
+  job.kernel_url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/Image
+  job.kernel_image: Image
+  job.modules_url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/modules.tgz
+  job.initrd_url: http://192.168.11.20:8085/healthcheck/images/rootfs/buildroot/arm64/rootfs.cpio.gz
+  job.nfsrootfs_url: None
+  job.dtb_url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
+
+# the device_type used for the job definition
+device_type: lec-imx8
+
+# context allows specific values to be overridden or included
+context:
+  test_character_delay: "10"
+  console_device: "ttymxc1"
+
+# description of the test objective
+job_name: lec-imx8mp-health-check
+
+# default time-out for the job
+timeouts:
+  job:
+    minutes: 15
+  action:
+   minutes: 15
+  actions:
+    power-off:
+      seconds: 30
+    uboot-retry:
+      minutes: 10
+
+# priority of the job definition
+priority: high
+
+# visibility of the job definition
+visibility: public
+
+# defines the pipeline job submissions (syntax formats: list of dictionaries, so a : follow by a -)
+actions:
+# list item "deploy" action
+- deploy:
+    timeout:
+       minutes: 10
+    to: tftp
+    kernel:
+      url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/Image
+      type: image
+    ramdisk:
+      url: http://192.168.11.20:8085/healthcheck/images/rootfs/buildroot/arm64/rootfs.cpio.gz
+      compression: gz
+    modules:
+      url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/modules.tgz
+      compression: gz
+    dtb:
+      url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
+    os: oe
+# list item "boot" action
+- boot:
+    method: u-boot
+    commands: ramdisk
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+      - '/ #'
+      - 'linaro-test'
+      - 'root@debian:~#'
+      - 'root@pico-imx8mm:~#'
+      - 'root@b2qt-pico-imx8mm:~#'
+    timeout:
+      minutes: 15
