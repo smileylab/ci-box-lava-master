@@ -1,0 +1,59 @@
+# lec-imx8-ums-healthcheck
+metadata:
+  # change these fields when modifying this job for your own tests
+  kernel.tree: adlink
+  kernel.version: v5.10.y
+  kernel.endian: little
+  test.plan: u-boot-ums
+  device.type: lec-imx8-ums
+  job.arch: arm64
+  job.name: Adlink_lec-imx8-ums_healthcheck
+  job.image_url: http://192.168.11.20:8085/adlink/sdcard/core-image-minimal-lec-imx8mp.sdcard.bz2
+  job.image_type: sdcard
+
+# pico-imx8-ums-healthcheck
+device_type: lec-imx8-ums
+
+context:
+  test_character_delay: "10"
+  console_device: "ttymxc1"
+
+job_name: lec-imx8-ums-healthcheck
+
+timeouts:
+  job:
+    minutes: 40
+  action:
+   minutes: 20
+  actions:
+    power-off:
+      seconds: 30
+
+priority: high
+visibility: public
+
+actions:
+
+- deploy:
+    timeout:
+        minutes: 10
+    to: u-boot-ums
+    os: oe
+    image:
+      url: http://192.168.11.20:8085/adlink/sdcard/core-image-minimal-lec-imx8mp.sdcard.bz2
+      compression: bz2
+      root_partition: 2
+
+- boot:
+    method: u-boot
+    commands: ums
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+      - '/ #'
+      - 'linaro-test'
+      - 'root@debian:~#'
+      - 'root@lec-imx8mp:~#'
+    timeout:
+        minutes: 30
