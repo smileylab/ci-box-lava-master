@@ -8,7 +8,7 @@ metadata:
   device.type: lec-imx8-ums
   job.arch: arm64
   job.name: Adlink_lec-imx8-ums_healthcheck
-  job.image_url: http://192.168.11.20:8085/adlink/sdcard/core-image-minimal-lec-imx8mp.sdcard.bz2
+  job.image_url: http://192.168.0.200:8085/adlink/sdcard/core-image-minimal-lec-imx8mp.sdcard.bz2
   job.image_type: sdcard
 
 # pico-imx8-ums-healthcheck
@@ -40,7 +40,7 @@ actions:
     to: u-boot-ums
     os: oe
     image:
-      url: http://192.168.11.20:8085/adlink/sdcard/core-image-minimal-lec-imx8mp.sdcard.bz2
+      url: http://192.168.0.200:8085/adlink/sdcard/core-image-minimal-lec-imx8mp.sdcard.bz2
       compression: bz2
       root_partition: 2
 

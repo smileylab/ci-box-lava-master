@@ -2,7 +2,7 @@
 metadata:
   # change these fields when modifying this job for your own tests
   image.type: 'kernel-ci'
-  image.url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/
+  image.url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/
   kernel.tree: Adlink
   kernel.version: v5.4.70
   kernel.endian: little
@@ -16,12 +16,12 @@ metadata:
   device.type: lec-imx8
   job.arch: arm64
   job.name: lec-imx8_health-check
-  job.kernel_url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/Image
+  job.kernel_url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/Image
   job.kernel_image: Image
-  job.modules_url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/modules.tgz
-  job.initrd_url: http://192.168.11.20:8085/healthcheck/images/rootfs/buildroot/arm64/rootfs.cpio.gz
+  job.modules_url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/modules.tgz
+  job.initrd_url: http://192.168.0.200:8085/healthcheck/images/rootfs/buildroot/arm64/rootfs.cpio.gz
   job.nfsrootfs_url: None
-  job.dtb_url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
+  job.dtb_url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
 
 # the device_type used for the job definition
 device_type: lec-imx8
@@ -60,16 +60,16 @@ actions:
        minutes: 10
     to: tftp
     kernel:
-      url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/Image
+      url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/Image
       type: image
     ramdisk:
-      url: http://192.168.11.20:8085/healthcheck/images/rootfs/buildroot/arm64/rootfs.cpio.gz
+      url: http://192.168.0.200:8085/healthcheck/images/rootfs/buildroot/arm64/rootfs.cpio.gz
       compression: gz
     modules:
-      url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/modules.tgz
+      url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/modules.tgz
       compression: gz
     dtb:
-      url: http://192.168.11.20:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
+      url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
     os: oe
 # list item "boot" action
 - boot:
