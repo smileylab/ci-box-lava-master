@@ -22,16 +22,4 @@ services:
         # List of additional packages to install (e.g. "vim gcc")
         extra_packages: "lava-coordinator net-tools"
     restart: always
-    ports: # Ports exposed to outside world (host-port:container-port)
-      - "5580:80"  # http for web interface
-      - "5555:5555"  # logger socket
-      - "5556:5556"  # master socket
-    volumes: # overlays to apply on top of lavasoftware container
-      # Custom startup scripts
-      - ./overlays/root/entrypoint.d:/root/entrypoint.d
-      # Device dictionnaries
-      - ./overlays/etc/lava-server/dispatcher-config/devices:/etc/lava-server/dispatcher-config/devices
-      # Lava settings
-      - ./overlays/etc/lava-server/settings.conf:/etc/lava-server/settings.conf
-      - ./overlays/etc/lava-server/settings.d/01-autoregister.yaml:/etc/lava-server/settings.d/01-autoregister.yaml
 
