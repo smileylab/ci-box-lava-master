@@ -1,0 +1,52 @@
+metadata:
+  source: https://git.linaro.org/lava/lava-lab.git
+  path: shared/health-checks/x86.yaml
+
+device_type: x86-grub
+
+job_name: x86_64 health check for zoetis smart panel (boot via grub)
+timeouts:
+  job:
+    minutes: 30
+  action:
+    minutes: 3
+  connection:
+    minutes: 2
+
+visibility: public
+priority: medium
+
+actions:
+- deploy:
+    timeout:
+      minutes: 20
+    to: tftp
+    kernel:
+      url: http://images.validation.linaro.org/snapshots.linaro.org/openembedded/lkft/morty/intel-core2-32/rpb/linux-stable-4.14/4/bzImage--4.14+git0+bebc6082da-r0-intel-core2-32-20171120193339-4.bin
+    nfsrootfs:
+      url: http://images.validation.linaro.org/snapshots.linaro.org/openembedded/lkft/morty/intel-core2-32/rpb/linux-stable-4.14/4/rpb-console-image-intel-core2-32-20171120193339-4.rootfs.tar.xz
+      compression: xz
+    os: oe
+- boot:
+    timeout:
+      minutes: 8
+    method: grub-efi
+    commands: nfs
+    parameters:
+      shutdown-message: "reboot: Restarting system"
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+      login_commands:
+        - su
+    prompts:
+    - 'root@intel-core2-32:'
+- test:
+    timeout:
+      minutes: 2
+    definitions:
+    - repository: http://git.linaro.org/lava-team/lava-functional-tests.git
+      from: git
+      path: lava-test-shell/smoke-tests-basic.yaml
+      name: smoke-tests
+ 
