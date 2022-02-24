@@ -12,10 +12,11 @@ ADD https://github.com/BayLibre/lava-healthchecks/archive/master.zip /root/
 RUN if [ -f /root/master.zip ]; then unzip -o /root/master.zip -d /root/ && \
 mv /root/lava-healthchecks-master/health-checks/* /etc/lava-server/dispatcher-config/health-checks/ && \
 rm -rf /root/master.zip /root/lava-healthchecks-master; fi
+
 # if there is internal healthcheck server (i.e. healthcheck_url), replace all
 # downloading url from the test jobs definition to our healthcheck server
 ARG healthcheck_url=""
-RUN if [ -n ${healthcheck_url} ] ; then sed -i "s,http.*blob/master,${healthcheck_url}," /etc/lava-server/dispatcher-config/health-checks/* && sed -i 's,?.*$,,' /etc/lava-server/dispatcher-config/health-checks/* ;fi
+RUN if [ -n "${healthcheck_url}" ] ; then sed -i "s,http.*blob/master,${healthcheck_url}," /etc/lava-server/dispatcher-config/health-checks/* && sed -i 's,?.*$,,' /etc/lava-server/dispatcher-config/health-checks/* ;fi
 RUN chown -R lavaserver:lavaserver /etc/lava-server/dispatcher-config/health-checks/
 
 #
@@ -24,17 +25,22 @@ RUN chown -R lavaserver:lavaserver /etc/lava-server/dispatcher-config/health-che
 COPY configs /root/configs
 # lava-server config setting
 RUN if [ -f /root/configs/settings.conf ]; then mv /root/configs/settings.conf /etc/lava-server/; fi
+
 # lava-server postgres instance and password setting
 RUN if [ -f /root/configs/instance.conf ]; then mv /root/configs/instance.conf /etc/lava-server/; fi
 RUN if [ -f /root/configs/.pgpass ]; then mv /root/configs/.pgpass /root/ && chmod 600 /root/.pgpass; fi
+
 # copy additional default settings for lava or other packages
 RUN if [ -n "$(ls -1 /root/configs/default)" ]; then mv /root/configs/default/* /etc/default/; fi
+
 # copy additional health-checks jobs scripts to /etc/lava-server/dispatcher-config/health-checks/
+ARG healthcheck_url=""
 RUN if [ -n "$(ls -1 /root/configs/health-checks)" ]; then \
-if [ -n ${healthcheck_url} ]; then sed -i "s,http.*:[0-9]*/,${healthcheck_url}/," /root/configs/health-checks/*.yaml; fi && \
+if [ -n "${healthcheck_url}" ]; then sed -i "s,http.*:[A-Za-z0-9]*/,${healthcheck_url}/," /root/configs/health-checks/*.yaml; fi && \
 mv /root/configs/health-checks/*.yaml /etc/lava-server/dispatcher-config/health-checks/ && \
 rm -rf /root/configs/health-checks; fi
 RUN chown -R lavaserver:lavaserver /etc/lava-server/dispatcher-config/health-checks/
+
 # full qualified domain name for lavalab site, default site is set as example.com
 RUN if [ -f /root/configs/lava_http_fqdn ]; then mv /root/configs/lava_http_fqdn /root/; fi
 # mv previous db/device/job backups for restoring
