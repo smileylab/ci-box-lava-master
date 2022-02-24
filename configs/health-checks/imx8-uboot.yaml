@@ -24,7 +24,7 @@ metadata:
   job.dtb_url: http://192.168.0.200:8085/adlink/linux-5.4.y/v5.4.70/arm64/lec_imx8mp_defconfig/gcc-8/dtbs/lec-imx8mp-ipi.dtb
 
 # the device_type used for the job definition
-device_type: lec-imx8
+device_type: imx8-uboot
 
 # context allows specific values to be overridden or included
 context:

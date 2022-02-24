@@ -12,7 +12,7 @@ metadata:
   job.image_type: sdcard
 
 # pico-imx8-ums-healthcheck
-device_type: lec-imx8-ums
+device_type: imx8-uboot-ums
 
 context:
   test_character_delay: "10"
