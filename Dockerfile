@@ -36,7 +36,7 @@ RUN if [ -n "$(ls -1 /root/configs/default)" ]; then mv /root/configs/default/* 
 # copy additional health-checks jobs scripts to /etc/lava-server/dispatcher-config/health-checks/
 ARG healthcheck_url=""
 RUN if [ -n "$(ls -1 /root/configs/health-checks)" ]; then \
-if [ -n "${healthcheck_url}" ]; then sed -i "s,http.*:[A-Za-z0-9]*/,${healthcheck_url}/," /root/configs/health-checks/*.yaml; fi && \
+if [ -n "${healthcheck_url}" ]; then sed -i "s,http[s]*://[.A-Za-z0-9]*/,${healthcheck_url}/," /root/configs/health-checks/*.yaml; fi && \
 mv /root/configs/health-checks/*.yaml /etc/lava-server/dispatcher-config/health-checks/ && \
 rm -rf /root/configs/health-checks; fi
 RUN chown -R lavaserver:lavaserver /etc/lava-server/dispatcher-config/health-checks/
