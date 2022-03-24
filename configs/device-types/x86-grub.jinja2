@@ -1,5 +1,11 @@
 {% extends 'base-grub.jinja2' %}
 {% set device_type = "x86-grub" %}
 {% set grub_autoboot_prompt = grub_autoboot_prompt|default('boot') %}
+
 {% set boot_character_delay = boot_character_delay | default(300) %}
+{% set efi_grub = True %}
 {% set action_timeout_bootloader_interrupt = 60 %}
+{% set efinet = True %}
+{#% set extra_nfsroot_args = ",vers=3" + extra_nfsroot_args|default('') %#}
+{#% set console_device = False %#}
+{#% set console_device = "ttyS0" %#}

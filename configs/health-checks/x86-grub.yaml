@@ -30,7 +30,7 @@ actions:
 - boot:
     timeout:
       minutes: 8
-    method: grub-efi
+    method: grub
     commands: nfs
     parameters:
       shutdown-message: "reboot: Restarting system"
