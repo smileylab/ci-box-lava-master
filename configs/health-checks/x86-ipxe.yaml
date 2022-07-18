@@ -1,8 +1,11 @@
 metadata:
-  source: https://git.linaro.org/lava/lava-lab.git
+  source: https://git.linaro.org/lava/lava-lab.git (tests/lava_dispatcher/sample_jobs/ipxe.yaml)
   path: shared/health-checks/x86.yaml
 
 device_type: x86-ipxe
+
+context:
+  extra_kernel_args: "console=ttyS1,115200n8 console=tty0"
 
 job_name: x86_64 health check for zoetis smart panel (boot via ipxe)
 timeouts:
@@ -22,31 +25,17 @@ actions:
       minutes: 20
     to: tftp
     kernel:
-      url: http://images.validation.linaro.org/snapshots.linaro.org/openembedded/lkft/morty/intel-core2-32/rpb/linux-stable-4.14/4/bzImage--4.14+git0+bebc6082da-r0-intel-core2-32-20171120193339-4.bin
-    nfsrootfs:
-      url: http://images.validation.linaro.org/snapshots.linaro.org/openembedded/lkft/morty/intel-core2-32/rpb/linux-stable-4.14/4/rpb-console-image-intel-core2-32-20171120193339-4.rootfs.tar.xz
-      compression: xz
+      url: http://fileserver:8085/adlink/intel-corei7-64/bzImage-initramfs
     os: oe
+
 - boot:
     timeout:
       minutes: 8
     method: ipxe
-    commands: nfs
+    commands: ramdisk
     parameters:
       shutdown-message: "reboot: Restarting system"
-    auto_login:
-      login_prompt: 'login:'
-      username: root
-      login_commands:
-        - su
     prompts:
-    - 'root@intel-core2-32:'
-- test:
-    timeout:
-      minutes: 2
-    definitions:
-    - repository: http://git.linaro.org/lava-team/lava-functional-tests.git
-      from: git
-      path: lava-test-shell/smoke-tests-basic.yaml
-      name: smoke-tests
- 
+    - 'linaro-test'
+    - 'root@debian:~#'
+    - '/ #'

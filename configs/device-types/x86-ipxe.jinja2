@@ -1,4 +1,5 @@
 {% extends 'x86.jinja2' %}
 {% set device_type = "x86-ipxe" %}
-{% set boot_character_delay = boot_character_delay | default(300) %}
+{% set boot_character_delay = boot_character_delay | default(50) %}
 {% set action_timeout_bootloader_interrupt = 60 %}
+{% set action_timeout_bootloader_commands = action_timeout_bootloader_commands | default(5) %}
