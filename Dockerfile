@@ -28,9 +28,10 @@ mv /root/lava-healthchecks-master/health-checks/* /etc/lava-server/dispatcher-co
 rm -rf /root/master.zip /root/lava-healthchecks-master; fi
 
 # lava-server postgres instance and postgres password setting
+COPY configs/instance.conf /etc/lava-server/
 #COPY configs/00-database.yaml /etc/lava-server/settings.d/
-#COPY configs/.pgpass /root/
-#RUN chmod 600 /root/.pgpass
+COPY configs/.pgpass /root/
+RUN chmod 600 /root/.pgpass
 
 COPY configs/devices/ /root/devices/
 COPY configs/device-types/ /root/device-types/

@@ -4,20 +4,38 @@ echo "======================================================"
 echo "Handle postgresql database"
 echo "======================================================"
 
-# always reset the lavaserver user, since its password could have been reseted in a "docker build --nocache"
-if [ ! -s /root/pg_lava_password ];then
-	echo "DEBUG: Generating a random LAVA password"
-	< /dev/urandom tr -dc A-Za-z0-9 | head -c16 > /root/pg_lava_password
-else
-	echo "DEBUG: use the given LAVA password"
+if [ -f /etc/lava-server/instance.conf ]; then
+	source /etc/lava-server/instance.conf
+elif [ -f /etc/lava-server/settings.d/00-database.yaml ]; then
+	LAVA_DB_SERVER=$(grep "HOST:" /etc/lava-server/settings.d/00-database.yaml | cut -d':' -f2 | xargs)
+	LAVA_DB_USER=$(grep "USER:" /etc/lava-server/settings.d/00-database.yaml | cut -d':' -f2 | xargs)
+	LAVA_DB_PORT=$(grep "PORT:" /etc/lava-server/settings.d/00-database.yaml | cut -d':' -f2 | xargs)
+	LAVA_DB_NAME=$(grep "NAME:" /etc/lava-server/settings.d/00-database.yaml | cut -d':' -f2 | xargs)
 fi
-sudo -u postgres psql -c "ALTER USER lavaserver WITH PASSWORD '$(cat /root/pg_lava_password)';" || exit $?
-if [ -e /etc/lava-server/instance.conf ];then
-	# pre 2020.05
-	sed -i "s,^LAVA_DB_PASSWORD=.*,LAVA_DB_PASSWORD='$(cat /root/pg_lava_password)'," /etc/lava-server/instance.conf || exit $?
-else
-	# 2020.05+
-	sed -i "s,PASSWORD:.*,PASSWORD: '$(cat /root/pg_lava_password)'," /etc/lava-server/settings.d/00-database.yaml || exit $?
+LOCAL_SQL=0
+if [ "$LAVA_DB_SERVER" = "localhost" -o "$LAVA_DB_SERVER" = "127.0.0.1" ]; then
+	LOCAL_SQL=1
+fi
+
+if [ "$LOCAL_SQL" = "1" ]; then
+	# always reset the lavaserver user, since its password could have been reseted in a "docker build --nocache"
+	if [ ! -s /root/pg_lava_password ];then
+		echo "DEBUG: Generating a random LAVA password"
+		< /dev/urandom tr -dc A-Za-z0-9 | head -c16 > /root/pg_lava_password
+	else
+		echo "DEBUG: use the given LAVA password"
+	fi
+	sudo -u postgres psql -c "ALTER USER lavaserver WITH PASSWORD '$(cat /root/pg_lava_password)';" || exit $?
+	if [ -e /etc/lava-server/instance.conf ];then
+		# pre 2020.05
+		sed -i "s,^LAVA_DB_PASSWORD=.*,LAVA_DB_PASSWORD='$(cat /root/pg_lava_password)'," /etc/lava-server/instance.conf || exit $?
+	else
+		# 2020.05+
+		sed -i "s,PASSWORD:.*,PASSWORD: '$(cat /root/pg_lava_password)'," /etc/lava-server/settings.d/00-database.yaml || exit $?
+	fi
+#else
+# we do not want to change user password for remote postsql server because .pgpass
+#	psql -U $LAVA_DB_USER -h $LAVA_DB_SERVER -p $LAVA_DB_PORT -c "ALTER USER $LAVA_DB_USER WITH PASSWROD '$(cat /root/pg_lava_password)';" || exit $?
 fi
 
 # verify that the backup was not already applied in case of persistent_db
@@ -28,7 +46,11 @@ if [ ! -e "/var/lib/postgresql/lava-docker.backup_done" ];then
 
 	if [ -e /root/backup/db_lavaserver ];then
 		echo "Restore database from backup"
-		sudo -u postgres psql < /root/backup/db_lavaserver || exit $?
+		if [ "$LOCAL_SQL" = "1" ]; then
+			sudo -u postgres psql < /root/backup/db_lavaserver || exit $?
+		else
+			psql -U $LAVA_DB_USER -h $LAVA_DB_SERVER -p $LAVA_DB_PORT < /root/backup/db_lavaserver || exit $?
+		fi
 		yes yes | lava-server manage migrate || exit $?
 		echo "Restore jobs output from backup"
 		rm -r /var/lib/lava-server/default/media/job-output/*
@@ -54,8 +76,13 @@ yes yes | lava-server manage migrate || exit $?
 
 # default site is set as example.com
 if [ -e /root/lava_http_fqdn ];then
-	sudo -u postgres psql lavaserver -c "UPDATE django_site SET name = '$(cat /root/lava_http_fqdn)'" || exit $?
-	sudo -u postgres psql lavaserver -c "UPDATE django_site SET domain = '$(cat /root/lava_http_fqdn)'" || exit $?
+	if [ "$LOCAL_SQL" = "1" ]; then
+		sudo -u postgres psql lavaserver -c "UPDATE django_site SET name = '$(cat /root/lava_http_fqdn)'" || exit $?
+		sudo -u postgres psql lavaserver -c "UPDATE django_site SET domain = '$(cat /root/lava_http_fqdn)'" || exit $?
+	else
+		psql -U $LAVA_DB_USER -h $LAVA_DB_SERVER -p $LAVA_DB_PORT $LAVA_DB_NAME -c "UPDATE django_site SET name = '$(cat /root/lava_http_fqdn)'" || exit $?
+		psql -U $LAVA_DB_USER -h $LAVA_DB_SERVER -p $LAVA_DB_PORT $LAVA_DB_NAME -c "UPDATE django_site SET domain = '$(cat /root/lava_http_fqdn)'" || exit $?
+	fi
 fi
 
 if [ -e /root/lava-users ];then
